@@ -1,0 +1,42 @@
+{
+  "delayMs": 200,
+  "graceMs": 400,
+  "signalsMs": [300],
+  "parentCancelMs": null,
+  "errors": [
+    {"name": "E_LISTEN", "message": "listener failed"},
+    {"name": "E_WEB_DRAIN", "message": "web drain incomplete"},
+    {"name": "E_JOBS", "message": "job drain failed"},
+    {"name": "E_JOBS_STATE", "message": "job state flush failed"},
+    {"name": "E_QUEUE_RECV", "message": "queue receive failed"},
+    {"name": "E_QUEUE_COMMIT", "message": "queue commit failed"}
+  ],
+  "tree": {
+    "id": "root",
+    "mode": "concurrent",
+    "children": [
+      {
+        "id": "zeta",
+        "mode": "ordered",
+        "children": [
+          {"id": "web", "launched": true, "runEndMs": null, "runErr": null, "drainMs": 250, "shutdownErrs": ["E_WEB_DRAIN"]},
+          {"id": "db", "launched": true, "runEndMs": null, "runErr": null, "drainMs": 5000, "shutdownErrs": []},
+          {"id": "arch", "launched": true, "runEndMs": null, "runErr": null, "drainMs": 100, "shutdownErrs": []}
+        ]
+      },
+      {"id": "cache", "launched": true, "runEndMs": 100, "runErr": null, "drainMs": 0, "shutdownErrs": []},
+      {
+        "id": "beta",
+        "mode": "concurrent",
+        "children": [
+          {"id": "jobs", "launched": true, "runEndMs": null, "runErr": null, "drainMs": 300, "shutdownErrs": ["E_JOBS", "E_JOBS_STATE"]},
+          {"id": "api", "launched": true, "runEndMs": 150, "runErr": "E_LISTEN", "drainMs": 0, "shutdownErrs": []},
+          {"id": "metrics", "launched": false, "runEndMs": null, "runErr": null, "drainMs": 0, "shutdownErrs": []},
+          {"id": "queue", "launched": true, "runEndMs": null, "runErr": null, "drainMs": 350, "shutdownErrs": ["E_QUEUE_RECV", "E_QUEUE_COMMIT"]},
+          {"id": "sinks", "launched": true, "runEndMs": null, "runErr": null, "drainMs": 4000, "shutdownErrs": []},
+          {"id": "probe", "launched": true, "runEndMs": null, "runErr": null, "drainMs": 100, "shutdownErrs": []}
+        ]
+      }
+    ]
+  }
+}
